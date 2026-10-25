@@ -1,0 +1,30 @@
+{
+  "style": {
+    "width": 1920,
+    "height": 1080,
+    "fit": "cover",
+    "x": 50,
+    "y": 30,
+    "scale": 1,
+    "width_pct": 20,
+    "title": "auto",
+    "date": "auto",
+    "time": "auto",
+    "lang": "en",
+    "date_format": "{d:02d} {M}, {Y}.",
+    "time_format": "- {H}:{i} -",
+    "color": "#ffffff",
+    "opacity": 1,
+    "shadow": 0.35,
+    "glow": 0.25,
+    "show_title": true,
+    "show_date": true,
+    "show_time": true,
+    "show_bar": true,
+    "show_controls": true,
+    "blur": 8,
+    "dim": 0.35,
+    "vignette": 0.6
+  },
+  "image": null
+}

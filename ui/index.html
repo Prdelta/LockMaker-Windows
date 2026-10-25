@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LockMaker</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <div class="brand">L O C K M A K E R</div>
+  <nav class="tabs" role="tablist">
+    <button class="tab on" data-tab="quick" role="tab">Ajustes rápidos</button>
+    <button class="tab" data-tab="designer" role="tab">Bloqueo y fondo</button>
+  </nav>
+  <div class="sys" id="sysinfo">detectando sistema…</div>
+</header>
+
+<section id="quick" class="quick">
+  <div class="qbar">
+    <input type="search" id="qsearch" placeholder="Buscar ajuste… (tema, reloj, barra, cursor)">
+    <span class="qinfo" id="qinfo"></span>
+    <button class="btn" id="qreload" title="volver a leer los valores del sistema">↻</button>
+    <button class="btn" id="qrestore" disabled>Restaurar originales</button>
+  </div>
+  <p class="qnote">Lee la configuración actual de tu sistema y solo cambia algo cuando tú lo tocas. No se inicia con el equipo ni reemplaza la Configuración: es un atajo a ella. Los ajustes marcados con ● los has cambiado aquí; <b>Restaurar originales</b> los devuelve a como estaban.</p>
+  <div class="qgrid" id="qgrid"><div class="qempty">Leyendo ajustes del sistema…</div></div>
+  <div class="qfoot">
+    <div class="qcard wide">
+      <h3>Abrir en la Configuración del sistema</h3>
+      <div class="links" id="qlinks"></div>
+      <div class="links" id="qactions"></div>
+    </div>
+  </div>
+</section>
+
+<main id="designer" hidden>
+  <section class="stage" id="stage">
+    <div class="drop" id="drop">
+      <input type="file" id="file" accept="image/*" hidden>
+      <div class="drop-inner">
+        <div class="big">＋</div>
+        <div>Arrastra una imagen aquí o <button class="link" id="pick">elige un archivo</button></div>
+        <small>PNG · JPG · WEBP · se recomienda 1920×1080 o mayor</small>
+      </div>
+    </div>
+    <div class="preview-wrap" id="pwrap" hidden>
+      <img id="preview" alt="vista previa" draggable="false">
+      <div class="hint">arrastra el texto para moverlo · rueda del ratón = tamaño</div>
+      <div class="spinner" id="spin" hidden></div>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <details open>
+      <summary>Imagen</summary>
+      <div class="row"><label>Archivo</label><button class="btn" id="pick2">Cambiar imagen…</button></div>
+      <div class="row"><label>Resolución</label>
+        <select id="res">
+          <option value="1920x1080">1920 × 1080 (Full HD)</option>
+          <option value="2560x1440">2560 × 1440 (QHD)</option>
+          <option value="3840x2160">3840 × 2160 (4K)</option>
+          <option value="1366x768">1366 × 768</option>
+          <option value="1920x1200">1920 × 1200 (16:10)</option>
+          <option value="2560x1600">2560 × 1600 (16:10)</option>
+          <option value="3440x1440">3440 × 1440 (ultrawide)</option>
+          <option value="screen">Pantalla actual</option>
+          <option value="image">Igual que la imagen</option>
+        </select></div>
+      <div class="row"><label>Ajuste</label>
+        <select id="fit" data-k="fit"><option value="cover">Rellenar (recortar)</option><option value="contain">Contener</option><option value="stretch">Estirar</option></select></div>
+      <div class="row"><label>Desenfoque</label><input type="range" min="0" max="30" step="0.5" value="0" data-k="blur"><output>0</output></div>
+      <div class="row"><label>Oscurecer</label><input type="range" min="0" max="0.8" step="0.02" value="0" data-k="dim"><output>0</output></div>
+      <div class="row"><label>Viñeta</label><input type="range" min="0" max="1" step="0.05" value="0" data-k="vignette"><output>0</output></div>
+    </details>
+
+    <details>
+      <summary>Wallpapers incluidos</summary>
+      <div class="gallery" id="gallery"></div>
+      <div class="row"><label>Desde URL</label><input type="text" id="wurl" placeholder="https://…/imagen.jpg"><button class="btn" id="wadd">Añadir</button></div>
+      <div class="row"><label>Buscar más</label><input type="text" id="wq" value="anime girl wallpaper"><button class="btn" id="wsearch">Buscar</button></div>
+      <div class="chips small" id="wchips">
+        <span data-q="anime girl wallpaper">chica anime</span>
+        <span data-q="anime girl portrait close up">retrato</span>
+        <span data-q="anime eyes close up">ojos</span>
+        <span data-q="anime girl night city lights">ciudad nocturna</span>
+        <span data-q="anime girl rain aesthetic">lluvia</span>
+        <span data-q="anime girl dark minimal">oscuro / minimal</span>
+        <span data-q="anime girl sky clouds">cielo</span>
+        <span data-q="anime girl school uniform">uniforme</span>
+        <span data-q="anime girl cat">con gato</span>
+        <span data-q="anime girl headphones music">música</span>
+        <span data-q="anime girl winter snow">nieve</span>
+        <span data-q="anime girl sakura">sakura</span>
+      </div>
+      <div class="links" id="wlinks"></div>
+      <p class="tip">Cómo traer uno: abre el resultado, clic derecho sobre la imagen → <b>Copiar dirección de imagen</b> → pégala en "Desde URL". Se descarga a tu PC (respeta la licencia del artista).</p>
+      <p class="tip">16 fondos originales (2560×1440), los 4 últimos con la paleta de la referencia. Pega la URL de cualquier wallpaper o copia archivos a la carpeta <code>wallpapers/</code> y aparecerán aquí. Clic derecho sobre uno tuyo para borrarlo.</p>
+    </details>
+
+    <details open>
+      <summary>Texto</summary>
+      <div class="row"><label>Idioma (auto)</label>
+        <select id="lang" data-k="lang"><option value="en">English</option><option value="es">Español</option></select></div>
+      <div class="row"><label>Título</label><input type="text" data-k="title" value="auto" placeholder="auto = día de la semana"></div>
+      <div class="row"><label>Fecha</label><input type="text" data-k="date" value="auto" placeholder="auto"></div>
+      <div class="row"><label>Hora</label><input type="text" data-k="time" value="auto" placeholder="auto"></div>
+      <div class="row"><label>Formato fecha</label><input type="text" data-k="date_format" value="{d:02d} {M}, {Y}." title="{d} día · {M} mes · {Y} año · {D} día semana · {m} mes nº"></div>
+      <div class="row"><label>Formato hora</label><input type="text" data-k="time_format" value="- {H}:{i} -" title="{H}:{i}:{s} 24h · {h} 12h · {p} AM/PM"></div>
+      <div class="row"><label>Mayúsculas</label><input type="checkbox" data-k="uppercase" checked></div>
+      <p class="tip">Escribe <b>auto</b> para usar el día/fecha/hora reales. Activa la auto-actualización abajo para que cambie sola.</p>
+    </details>
+
+    <details open>
+      <summary>Posición y tamaño</summary>
+      <div class="row"><label>X %</label><input type="range" min="0" max="100" step="0.1" value="52" data-k="x"><output>52</output></div>
+      <div class="row"><label>Y %</label><input type="range" min="0" max="100" step="0.1" value="9" data-k="y"><output>9</output></div>
+      <div class="row"><label>Escala</label><input type="range" min="0.3" max="3" step="0.02" value="1" data-k="scale"><output>1</output></div>
+      <div class="row"><label>Título</label><input type="range" min="0.4" max="2.5" step="0.02" value="1" data-k="title_size"><output>1</output></div>
+      <div class="row"><label>Ancho barra %</label><input type="range" min="5" max="90" step="0.5" value="20" data-k="width_pct"><output>20</output></div>
+      <div class="row"><label>Espaciado título</label><input type="range" min="0" max="1.5" step="0.01" value="0.55" data-k="title_spacing"><output>0.55</output></div>
+      <div class="row"><label>Espaciado fecha</label><input type="range" min="0" max="0.8" step="0.01" value="0.14" data-k="date_spacing"><output>0.14</output></div>
+    </details>
+
+    <details>
+      <summary>Estilo</summary>
+      <div class="row"><label>Color</label><input type="color" data-k="color" value="#ffffff"></div>
+      <div class="row"><label>Opacidad</label><input type="range" min="0.1" max="1" step="0.02" value="1" data-k="opacity"><output>1</output></div>
+      <div class="row"><label>Sombra</label><input type="range" min="0" max="1" step="0.05" value="0.35" data-k="shadow"><output>0.35</output></div>
+      <div class="row"><label>Resplandor</label><input type="range" min="0" max="1" step="0.05" value="0" data-k="glow"><output>0</output></div>
+      <div class="row"><label>Fuente título</label>
+        <select data-k="font_title"><option value="light">Poppins Light</option><option value="regular">Poppins Regular</option><option value="medium">Poppins Medium</option></select></div>
+      <div class="row"><label>Progreso</label><input type="range" min="0" max="1" step="0.01" value="0" data-k="bar_progress"><output>0</output></div>
+      <div class="row"><label>Texto izq.</label><input type="text" data-k="bar_left" value="00:00"></div>
+      <div class="row"><label>Texto der.</label><input type="text" data-k="bar_right" value="-00:00"></div>
+    </details>
+
+    <details>
+      <summary>Elementos</summary>
+      <div class="chips">
+        <label><input type="checkbox" data-k="show_title" checked> Título</label>
+        <label><input type="checkbox" data-k="show_date" checked> Fecha</label>
+        <label><input type="checkbox" data-k="show_time" checked> Hora</label>
+        <label><input type="checkbox" data-k="show_bar" checked> Barra</label>
+        <label><input type="checkbox" data-k="show_controls" checked> Controles</label>
+      </div>
+    </details>
+
+    <details>
+      <summary>Animación (GIF / MP4)</summary>
+      <div class="row"><label>Origen</label>
+        <select id="asrc"><option value="current">Imagen actual (o GIF cargado)</option></select></div>
+      <div class="row"><label>Duración</label><input type="range" min="2" max="20" step="1" value="6" data-a="seconds"><output>6</output></div>
+      <div class="row"><label>FPS</label><input type="range" min="5" max="30" step="1" value="15" data-a="fps"><output>15</output></div>
+      <div class="row"><label>Resolución</label>
+        <select id="ares"><option value="1280x720">1280 × 720 (ligero)</option><option value="1920x1080">1920 × 1080</option><option value="2560x1440">2560 × 1440</option><option value="960x540">960 × 540 (GIF mini)</option></select></div>
+      <div class="row"><label>Zoom suave</label><input type="range" min="0" max="0.2" step="0.01" value="0.05" data-a="kenburns"><output>0.05</output></div>
+      <div class="row"><label>Pulso texto</label><input type="range" min="0" max="1" step="0.05" value="0.25" data-a="pulse"><output>0.25</output></div>
+      <div class="row"><label>Partículas</label>
+        <select data-a="particles"><option value="none">Ninguna</option><option value="bokeh">Bokeh</option><option value="snow">Nieve</option><option value="rain">Lluvia</option><option value="stars">Estrellas</option></select></div>
+      <div class="row"><label>Densidad</label><input type="range" min="0.2" max="3" step="0.1" value="1" data-a="density"><output>1</output></div>
+      <div class="row"><label>Barra animada</label><input type="checkbox" data-a="bar" checked></div>
+      <div class="row"><label>Formato</label>
+        <select id="afmt"><option value="gif">GIF (sin dependencias, pesado)</option><option value="mp4">MP4 (ffmpeg, recomendado)</option><option value="webm">WebM (ffmpeg)</option></select></div>
+      <div class="actions">
+        <button class="btn primary" id="agen">Generar animación</button>
+        <button class="btn" id="adl" disabled>Descargar</button>
+      </div>
+      <div class="actions">
+        <button class="btn" id="alive" disabled>Aplicar como fondo animado</button>
+        <label class="mini" title="(Linux) volver a lanzar el fondo animado al iniciar sesión"><input type="checkbox" id="apersist"> al iniciar</label>
+        <button class="btn ghost" id="astop" title="detener el fondo animado">■</button>
+      </div>
+      <div class="progress" id="aprog" hidden><div></div></div>
+      <p class="tip" id="atip">Bloqueo/inicio de sesión no admiten animación (son imágenes fijas): ahí se usa el primer fotograma. El fondo animado necesita un reproductor: <b>Lively Wallpaper</b> en Windows, <b>mpvpaper</b> / <b>xwinwrap+mpv</b> en Linux.</p>
+    </details>
+
+    <details open>
+      <summary>Presets</summary>
+      <div class="row"><label>Cargar</label><select id="presets"></select></div>
+      <div class="row"><label>Guardar como</label><input type="text" id="pname" placeholder="mi preset"><button class="btn" id="psave">Guardar</button></div>
+    </details>
+
+    <details open class="apply">
+      <summary>Aplicar</summary>
+      <div class="chips targets">
+        <label><input type="checkbox" value="wallpaper" checked> Escritorio</label>
+        <label><input type="checkbox" value="lock" checked> Bloqueo</label>
+        <label><input type="checkbox" value="login"> Inicio de sesión</label>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="apply">Aplicar ahora</button>
+        <button class="btn" id="export">Descargar PNG</button>
+      </div>
+      <div class="row"><label>Auto-actualizar</label>
+        <select id="every"><option value="1">cada 1 min</option><option value="5">cada 5 min</option><option value="15">cada 15 min</option><option value="60">cada hora</option><option value="1440">cada día</option></select>
+        <button class="btn" id="auto">Activar</button><button class="btn ghost" id="autooff" title="quitar la tarea">✕</button></div>
+      <p class="tip">Con <b>auto</b> en título/fecha/hora, la auto-actualización regenera y vuelve a aplicar la imagen: cada N minutos y, en Windows, también al iniciar sesión, bloquear/desbloquear y despertar del reposo. Si prefieres el reloj vivo del sistema, usa el preset <i>Bloqueo con reloj del sistema</i> (solo día y fecha).</p>
+      <div id="log" class="log"></div>
+    </details>
+  </aside>
+</main>
+<script src="/app.js"></script>
+<script src="/quick.js"></script>
+</body>
+</html>
